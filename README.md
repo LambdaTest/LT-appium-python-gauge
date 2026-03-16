@@ -212,3 +212,55 @@ To stay updated with the latest features and product add-ons, visit [Changelog](
 
 - Got a query? we are available 24x7 to help. [Contact Us](mailto:support@lambdatest.com)
 - For more info, visit - [LambdaTest](https://www.lambdatest.com/?utm_source=github&utm_medium=repo&utm_campaign=LT-appium-python-gauge)
+
+
+
+**Additional Note for Python 3.13+ Users**
+
+If you are using Python 3.13 or later, you may encounter compatibility issues with the default protobuf implementation used by Gauge. To resolve this, set the following environment variable before running the tests:
+
+**For Linux/macOS**
+
+```bash
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+
+For Windows
+
+set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+
+---
+
+# 2️⃣ Add a **Recommended Dependencies** section
+
+Place this **after "Clone The Sample Project" section**.
+
+```markdown
+### Install Python Dependencies
+
+Install the required dependencies from the project directory:
+
+```bash
+pip install -r requirements.txt
+
+
+---
+
+# 3️⃣ Add a **Driver Initialization Update** note
+
+Add this **after "Configuring Your Test Capabilities" section**.
+
+```markdown
+### Driver Initialization Update
+
+The project uses the modern Appium Python client syntax for initializing the driver:
+
+```python
+from appium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+driver = webdriver.Remote(
+    command_executor="https://hub.lambdatest.com/wd/hub",
+    desired_capabilities=caps
+)
+
+

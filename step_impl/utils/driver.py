@@ -1,36 +1,45 @@
 import os
 from getgauge.python import before_suite, after_suite
 from appium import webdriver
-import requests
+from appium.options.android import UiAutomator2Options
 
-class Driver(object):
+
+class Driver:
     driver = None
 
     @before_suite
     def init(self):
-        self.username = os.getenv("LT_USERNAME") if os.getenv("LT_USERNAME") is not None else "LT_USERNAME" # replace with your LT username
-        self.authkey  = os.getenv("LT_ACCESS_KEY") if os.getenv("LT_ACCESS_KEY") is not None else "LT_ACCESS_KEY" # replace with your LT access key
 
+        username = os.getenv("LT_USERNAME")
+        access_key = os.getenv("LT_ACCESS_KEY")
 
-        caps = {}
-        
-        # replace with your desired test capabilities
-        caps['name'] = 'Gauge Sample Test'
-        caps['build'] = 'Python_Gauge_LambdaTest'
-        caps['isRealMobile'] = 'true'
-        caps['platformVersion'] = '11'
-        caps['platform'] = 'Android'
-        caps['deviceName'] = 'Galaxy S21 Ultra 5G'
-        caps['app'] = 'lt://proverbial-android'      #Enter your app url here
+        caps = {
+            "platformName": "Android",
+            "appium:platformVersion": "13",
+            "appium:deviceName": "Galaxy S21 Ultra 5G",
+            "appium:app": "lt://proverbial-android",
+            "lt:options": {
+                "name": "Gauge Sample Test",
+                "build": "Python_Gauge_LambdaTest",
+                "isRealMobile": True
+            }
+        }
 
+        options = UiAutomator2Options().load_capabilities(caps)
 
-        # start the remote browser on our server
+        hub_url = f"https://{username}:{access_key}@mobile-hub.lambdatest.com/wd/hub"
+
+        print("Starting LambdaTest session...")
+
         Driver.driver = webdriver.Remote(
-            desired_capabilities=caps,
-            command_executor="http://%s:%s@mobile-hub.lambdatest.com/wd/hub"%(self.username,self.authkey)
-         )
+            command_executor=hub_url,
+            options=options
+        )
 
+        print("Session started:", Driver.driver.session_id)
 
     @after_suite
-    def close():
-        Driver.driver.quit()
+    def close(self):
+
+        if Driver.driver:
+            Driver.driver.quit()
